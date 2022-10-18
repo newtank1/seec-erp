@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nju.edu.erp.dao.SaleReturnsSheetDao">
+    <insert id="saveSheet" parameterType="SaleReturnsSheetPO">
+        insert into sale_returns_sheet (id, sale_sheet_id, operator, remark, final_amount, state, create_time)
+        values (#{id},#{saleSheetId},#{operator},#{remark},#{finalAmount},#{state}, #{createTime})
+    </insert>
+    <update id="updateSheetState">
+        update sale_returns_sheet
+        set state = #{state}
+        where id = #{SheetId}
+    </update>
+    <update id="updateSheetStateOnPrev">
+        update sale_returns_sheet
+        set state = #{state}
+        where id = #{SheetId} and state = #{prev}
+    </update>
+
+    <select id="getLatestSheet" resultMap="SaleReturnsSheetPO">
+        select * from sale_returns_sheet order by id desc limit 0,1 ;
+    </select>
+    <select id="findAllSheet" resultType="com.nju.edu.erp.model.po.SaleReturnsSheetPO">
+        select * from sale_returns_sheet;
+    </select>
+    <select id="findAllByState" resultType="com.nju.edu.erp.model.po.SaleReturnsSheetPO">
+        select * from sale_returns_sheet where state = #{state}
+    </select>
+    <select id="findOneById" resultType="com.nju.edu.erp.model.po.SaleReturnsSheetPO">
+        select * from sale_returns_sheet where id=#{saleReturnsSheetId}
+    </select>
+    <select id="findContentBySheetId" resultType="com.nju.edu.erp.model.po.SaleReturnsSheetContentPO">
+        select * from sale_returns_sheet_content where sale_sheet_id = #{sheetId}
+    </select>
+    <select id="findBatchId" resultType="java.lang.Integer">
+        select wis.batch_id from sale_returns_sheet prs, warehouse_input_sheet wis
+#        where prs.sale_sheet_id = wis.sale_return_sheet_id and prs.id = #{saleReturnsSheetId}
+#         这里编译不过
+    </select>
+    <select id="findByFilter" resultType="com.nju.edu.erp.model.po.SaleReturnsSheetPO">
+        select * from sale_returns_sheet
+        <where>
+            <if test="beginDate != null">
+                create_time>=#{beginDate}
+            </if>
+            <if test="endDate != null">
+                and create_time&lt;=#{endDate}
+            </if>
+            <if test="customerId != null">
+                and supplier=#{customerId}
+            </if>
+        </where>
+    </select>
+
+    <insert id="saveBatchSheetContent" useGeneratedKeys="true" keyProperty="id">
+        insert into sale_returns_sheet_content (sale_sheet_id, pid, quantity, unit_price, total_price, remark) values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.saleReturnsSheetId},#{item.pid},#{item.quantity},#{item.unitPrice},#{item.totalPrice},#{item.remark})
+        </foreach>
+    </insert>
+
+    <resultMap id="SaleReturnsSheetPO" type="com.nju.edu.erp.model.po.SaleReturnsSheetPO">
+        <id column="id" property="id"></id>
+        <result column="sale_sheet_id" property="saleSheetId"></result>
+        <result column="operator" property="operator"></result>
+        <result column="remark" property="remark"></result>
+        <result column="final_amount" property="finalAmount"></result>
+        <result column="state" property="state"></result>
+        <result column="create_time" property="createTime"></result>
+    </resultMap>
+</mapper>

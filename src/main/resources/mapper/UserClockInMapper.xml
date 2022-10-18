@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nju.edu.erp.dao.UserClockInDao">
+    <insert id="insert" parameterType="UserClockInPO" useGeneratedKeys="true" keyProperty="id">
+        insert into user_clockin (id, user_name, date)
+        values (#{id}, #{userName}, #{date})
+    </insert>
+
+    <select id="findByUserName" resultType="com.nju.edu.erp.model.po.UserClockInPO">
+        select * from user_clockin where user_name=#{name};
+    </select>
+
+
+</mapper>

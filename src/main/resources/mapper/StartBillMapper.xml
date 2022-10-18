@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nju.edu.erp.dao.StartBillDao">
+    <insert id="insert" parameterType="StartBillPO">
+        insert into start_bill (id, create_time)
+        values (#{id}, #{createTime});
+    </insert>
+
+    <insert id="insertProducts" useGeneratedKeys="true" keyProperty="id">
+        insert into start_product (id, bill_id, name, category_id, type) values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.id}, #{item.billId}, #{item.name}, #{item.categoryId}, #{item.type})
+        </foreach>
+    </insert>
+
+
+    <insert id="insertCustomers" useGeneratedKeys="true" keyProperty="id">
+        <foreach collection="list" item="item" index="index" separator=",">
+            insert into start_customer (id, bill_id, name, level, type, phone, address, zipcode, email, line_of_credit, receivable, payable, operator) values
+            (#{item.id}, #{item.billId}, #{item.name}, #{item.level}, #{item.type}, #{item.phone}, #{item.address}, #{item.zipcode}, #{item.email}, #{item.lineOfCredit}, #{item.receivable}, #{item.payable}, #{item.operator})
+        </foreach>
+    </insert>
+
+    <insert id="insertAccounts" useGeneratedKeys="true" keyProperty="id">
+        <foreach collection="list" item="item" index="index" separator=",">
+            insert into start_bank_account (account_id, bill_id, name, surplus) values
+            (#{item.accountId}, #{item.billId}, #{item.name}, #{item.surplus})
+        </foreach>
+    </insert>
+
+    <select id="findAll" resultMap="StartBillPO">
+        select * from start_bill;
+    </select>
+
+    <select id="findProductsById" resultType="com.nju.edu.erp.model.po.StartProductPO">
+        select * from start_product where id=#{id};
+    </select>
+
+    <select id="findCustomersById" resultType="com.nju.edu.erp.model.po.StartCustomerPO">
+        select * from start_customer where id=#{id};
+    </select>
+
+    <select id="findAccountsById" resultType="com.nju.edu.erp.model.po.StartBankAccountPO">
+        select * from start_bank_account where account_id=#{id};
+    </select>
+
+    <resultMap id="StartBillPO" type="com.nju.edu.erp.model.po.StartBillPO">
+        <id column="id" property="id" />
+        <result column="create_time" property="createTime" />
+    </resultMap>
+</mapper>

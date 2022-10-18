@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nju.edu.erp.dao.UserDao">
+    <select id = "findByUsernameAndPassword" resultMap="User">
+        select * from user where `name` = #{username} and password = #{password}
+    </select>
+
+    <select id = "findByUsername" resultMap="User">
+        select * from user where `name` = #{username}
+    </select>
+
+    <select id = "getAll" resultMap="User">
+        select * from user
+    </select>
+
+    <select id = "getAllInfo" resultMap="UserInfoPO">
+        select * from user_info
+    </select>
+
+    <insert id = "createUser" parameterType="User" useGeneratedKeys="true" keyProperty="id">
+        insert into user (password, `name`, `role`)
+        values (#{password}, #{name}, #{role})
+    </insert>
+
+    <select id="getUserInfo" resultType="com.nju.edu.erp.model.po.UserInfoPO">
+        select * from user_info where name=#{username}
+    </select>
+    <insert id="insertInfo" parameterType="com.nju.edu.erp.model.po.UserInfoPO" useGeneratedKeys="true" keyProperty="id">
+        insert into user_info (id, user_id, sex, name, birthday, phone, basic_salary, role_salary, level, account)
+        values (#{id}, #{userId}, #{sex}, #{name}, #{birthday}, #{phone}, #{basicSalary}, #{roleSalary}, #{level}, #{account});
+    </insert>
+
+
+    <resultMap id="User" type="com.nju.edu.erp.model.po.User">
+        <id column="id" property="id"></id>
+        <result column="name" property="name"></result>
+        <result column="password" property="password"></result>
+        <result column="role" property="role"></result>
+    </resultMap>
+    
+    <resultMap id="UserInfoPO" type="com.nju.edu.erp.model.po.UserInfoPO">
+        <id column="id" property="id"></id>
+        <result column="user_id" property="userId"></result>
+        <result column="sex" property="sex"></result>
+        <result column="name" property="name"></result>
+        <result column="birthday" property="birthday"></result>
+        <result column="phone" property="phone"></result>
+        <result column="basic_salary" property="basicSalary"></result>
+        <result column="role_salary" property="roleSalary"></result>
+        <result column="level" property="level"></result>
+        <result column="account" property="account"></result>
+    </resultMap>
+</mapper>

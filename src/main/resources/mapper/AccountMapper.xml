@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nju.edu.erp.dao.AccountDao">
+
+    <insert id="insert" parameterType="BankAccountPO" useGeneratedKeys="true" keyProperty="accountId">
+        insert into bank_account (account_id, name, surplus)
+        values (#{accountId},#{name},#{surplus})
+    </insert>
+
+    <select id="findAll" resultMap="BankAccountPO">
+        select * from bank_account;
+    </select>
+
+    <select id="findByName" resultMap="BankAccountPO">
+        select * from bank_account where name = #{name}
+    </select>
+
+    <select id="findById" resultMap="BankAccountPO">
+        select * from bank_account where account_id = #{id}
+    </select>
+
+    <select id="findByKeyword" resultMap="BankAccountPO">
+        select * from bank_account where locate(#{keyword},name)>0
+    </select>
+
+    <update id="update" parameterType="BankAccountPO">
+        update bank_account
+        <set>
+            <if test = "name != null">`name` = #{name}, </if>
+            <if test = "surplus != null">`surplus` = #{surplus}</if>
+        </set>
+        where account_id = #{accountId}
+    </update>
+
+    <delete id="deleteById">
+        delete from bank_account where account_id = #{accountId}
+    </delete>
+
+    <resultMap id="BankAccountPO" type="com.nju.edu.erp.model.po.BankAccountPO">
+        <id column="account_id" property="accountId"></id>
+        <result column="name" property="name"></result>
+        <result column="surplus" property="surplus"></result>
+    </resultMap>
+
+</mapper>
